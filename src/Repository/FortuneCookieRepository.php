@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\FortuneCookie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -28,6 +29,24 @@ class FortuneCookieRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    } 
+
+    public function countNumberPrintedForCategory (Category $category) {
+
+        $result = $this->createQueryBuilder('fortuneCookie') 
+                        ->select('SUM(fortuneCookie.numberPrinted) as totalPrinted') 
+                        ->addSelect('category.name') 
+                        ->addSelect('AVG(fortuneCookie.numberPrinted) as averagePrinted') 
+                        ->innerJoin('fortuneCookie.category', 'category') 
+                        ->andWhere('category.id = :categoryId')
+                        ->setParameter('categoryId', $category->getId()) 
+                        ->getQuery() 
+                        ->getSingleResult();
+        
+
+        return $result; 
+
+
     }
 
     public function remove(FortuneCookie $entity, bool $flush = false): void
