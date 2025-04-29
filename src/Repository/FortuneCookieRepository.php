@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use App\Entity\FortuneCookie;
+use App\Model\CategoryFortuneStats;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -30,6 +31,37 @@ class FortuneCookieRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     } 
+
+    public function rawQuery(){
+        $conn = $this->getEntityManager()->getConnection(); 
+        $sql = 'SELECT * FROM fortune_cookie'; 
+
+        $conn->prepare($sql);
+        
+        $stmt = $conn->executeQuery($sql);
+        $result = $stmt->fetchAllAssociative();  
+
+        // dd ($result); 
+
+        return $result; 
+
+        // OR 
+
+        // $stmt = $conn->prepare('SELECT * FROM fortune_cookie WHERE id = :id');
+        // $stmt->bindValue('id', 1, \PDO::PARAM_INT); 
+        // $stmt->execute();
+        // $result = $stmt->fetchAllAssociative(); 
+        // dd ($result); 
+
+        // OR
+        // using a DTO 
+        // $result = $stmt->fetchAssociative(); 
+
+        //OR 
+        // return new CategoryFortuneStats(...$result->fetchAssociative()); 
+
+
+    }
 
     public function countNumberPrintedForCategory (Category $category) {
 

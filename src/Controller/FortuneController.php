@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
+use App\Repository\FortuneCookieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,8 +31,12 @@ class FortuneController extends AbstractController
     }
 
     #[Route('/category/{id}', name: 'app_category_show')]
-    public function showCategory(Category $category): Response
+    public function showCategory(Category $category, FortuneCookieRepository $fortuneCookieRepository): Response
     {
+
+        $rawResult = $fortuneCookieRepository->rawQuery(); 
+        // dump($rawResult); 
+
         return $this->render('fortune/showCategory.html.twig',[
             'category' => $category
         ]);
