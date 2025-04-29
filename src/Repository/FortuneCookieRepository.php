@@ -6,6 +6,10 @@ use App\Entity\Category;
 use App\Entity\FortuneCookie;
 use App\Model\CategoryFortuneStats;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
+use Doctrine\DBAL\Query;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -62,6 +66,32 @@ class FortuneCookieRepository extends ServiceEntityRepository
 
 
     }
+
+    /**
+     * @param QueryBuilder $queryBuilder 
+     * @return QueryBuilder 
+     */
+    public function customQueryWithJoin(QueryBuilder $queryBuilder): QueryBuilder{
+        return $queryBuilder->addSelect('fortuneCookie')
+                            ; // ->leftJoin('category.fortuneCookie', 'fortuneCookie'); 
+
+
+    }
+
+    public function customQueryJoiner(QueryBuilder $qb): QueryBuilder{
+    
+        return $this->customQueryWithJoin($qb)
+                    ->$this->addOrderBy($qb) 
+                    ->groupBy('category.id'); 
+
+    } 
+
+    private function addOrderBy(QueryBuilder $qb = null ) : QueryBuilder { 
+        return ($qb ?? $this->createQueryBuilder('fortuneCookie'))
+                    ->orderBy('category.name', Order::Ascending); 
+    }
+
+
 
     public function countNumberPrintedForCategory (Category $category) {
 
