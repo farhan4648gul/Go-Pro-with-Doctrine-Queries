@@ -28,6 +28,33 @@ class CategoryRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    } 
+
+    /**
+     * @param string $search 
+     * @return Category[] Returns an array of Category objects
+     */ 
+    public function searchAll($search):array { 
+        return $this->createQueryBuilder('category') 
+            ->andWhere('category.name LIKE :search OR category.iconKey LIKE :search')  
+            ->setParameter('search', '%'.$search.'%') 
+            ->addOrderBy('category.name', 'ASC')  
+            ->getQuery()
+            ->getResult(); 
+    }
+
+    public function findAllOrdered() {
+
+        $result = $this->createQueryBuilder('c')
+            ->select('c') 
+            ->orderBy('c.name', 'ASC')
+            ->getQuery() 
+            ->getResult();
+        
+        // dd($result); 
+
+        return $result; 
+
     }
 
     public function remove(Category $entity, bool $flush = false): void
