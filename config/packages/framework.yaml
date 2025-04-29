@@ -16,7 +16,8 @@ framework:
     #esi: true
     #fragments: true
     php_errors:
-        log: true
+        log: true 
+    ide: 'vscode-insiders://open?url=file://%%f&line=%%l'
 
 when@test:
     framework:
