@@ -86,5 +86,34 @@ class Category
         }
 
         return $this;
+    } 
+
+
+    public function countNumberPrintedForCategory (Category $category) {
+
+        $result = $this->createQueryBuilder('fortuneCookie') 
+                        ->select (
+                            sprintf(
+                                'NEW %s(
+                                    SUM(fortuneCookie.numberPrinted) as totalPrinted, 
+                                    AVG(fortuneCookie.numberPrinted) as averagePrinted, 
+                                    category.name)',
+                                CategoryFortuneStats::class  
+                            )
+                        )
+                        // ->select('SUM(fortuneCookie.numberPrinted) as totalPrinted') 
+                        // ->addSelect('category.name') 
+                        // ->addSelect('AVG(fortuneCookie.numberPrinted) as averagePrinted') 
+                        ->innerJoin('fortuneCookie.category', 'category') 
+                        ->andWhere('category.id = :categoryId')
+                        ->setParameter('categoryId', $category->getId()) 
+                        ->getQuery() 
+                        ->getSingleResult();
+        
+
+        return $result; 
+
+
     }
+
 }

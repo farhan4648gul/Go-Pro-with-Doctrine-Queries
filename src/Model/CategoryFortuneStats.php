@@ -1,5 +1,3 @@
-
-
 <?php 
 
 
@@ -13,8 +11,10 @@ class CategoryFortuneStats{
         public float $fortunesAverage, 
         public string $categoryName, 
     ){
-
+        
 
     }
+
+
 
 }

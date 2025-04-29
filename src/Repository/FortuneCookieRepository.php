@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Category;
+use App\Model\CategoryFortuneStats; 
 use App\Entity\FortuneCookie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,15 +32,24 @@ class FortuneCookieRepository extends ServiceEntityRepository
         }
     } 
 
-    public function countNumberPrintedForCategory (Category $category) {
+    public function countNumberPrintedForCategory (int $id) { 
 
         $result = $this->createQueryBuilder('fortuneCookie') 
-                        ->select('SUM(fortuneCookie.numberPrinted) as totalPrinted') 
-                        ->addSelect('category.name') 
-                        ->addSelect('AVG(fortuneCookie.numberPrinted) as averagePrinted') 
+                        ->select (
+                            sprintf(
+                                'NEW %s(
+                                    SUM(fortuneCookie.numberPrinted),  
+                                    AVG(fortuneCookie.numberPrinted), 
+                                    category.name)',
+                                CategoryFortuneStats::class  
+                            )
+                        )
+                        // ->select('SUM(fortuneCookie.numberPrinted) as totalPrinted') 
+                        // ->addSelect('category.name') 
+                        // ->addSelect('AVG(fortuneCookie.numberPrinted) as averagePrinted') 
                         ->innerJoin('fortuneCookie.category', 'category') 
                         ->andWhere('category.id = :categoryId')
-                        ->setParameter('categoryId', $category->getId()) 
+                        ->setParameter('categoryId', $id) 
                         ->getQuery() 
                         ->getSingleResult();
         
@@ -47,7 +57,8 @@ class FortuneCookieRepository extends ServiceEntityRepository
         return $result; 
 
 
-    }
+    } 
+
 
     public function remove(FortuneCookie $entity, bool $flush = false): void
     {

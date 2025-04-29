@@ -59,6 +59,34 @@ class CategoryRepository extends ServiceEntityRepository
 
     }
 
+
+    public function countNumberPrintedForCategory (Category $category) {
+
+        $result = $this->createQueryBuilder('fortuneCookie') 
+                        // ->select (
+                        //     sprintf(
+                        //         'NEW %s(
+                        //             SUM(fortuneCookie.numberPrinted), 
+                        //             AVG(fortuneCookie.numberPrinted), 
+                        //             category.name)',
+                        //         CategoryFortuneStats::class  
+                        //     )
+                        // )
+                        ->select('SUM(fortuneCookie.numberPrinted) as totalPrinted') 
+                        ->addSelect('category.name') 
+                        ->addSelect('AVG(fortuneCookie.numberPrinted) as averagePrinted') 
+                        ->innerJoin('fortuneCookie.category', 'category') 
+                        ->andWhere('category.id = :categoryId')
+                        ->setParameter('categoryId', $category->getId()) 
+                        ->getQuery() 
+                        ->getSingleResult();
+        
+
+        return $result; 
+
+
+    } 
+
     public function remove(Category $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
