@@ -37,8 +37,11 @@ class FortuneController extends AbstractController
         $rawResult = $fortuneCookieRepository->rawQuery(); 
         // dump($rawResult); 
 
+        $inProductionCookieList = $fortuneCookieRepository->inProductionCookies(); 
+
         return $this->render('fortune/showCategory.html.twig',[
-            'category' => $category
+            'category' => $category, 
+            'inProductionCookieList' => $inProductionCookieList, 
         ]);
     }
 }

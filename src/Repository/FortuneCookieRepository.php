@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\FortuneCookie;
 use App\Model\CategoryFortuneStats;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Query;
@@ -35,6 +36,30 @@ class FortuneCookieRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     } 
+
+    /**
+     * @return FortuneCookie[] Returns an array of FortuneCookie objects
+     */ 
+    public function inProductionCookies():array {
+
+        $qb = $this->createQueryBuilder('fortuneCookie');
+        $qb->addCriteria(self::createFortuneCookiesStillInProductionCheck()); 
+
+        $result = $qb->getQuery()->getResult();
+        // dd($result); 
+        
+        // $result = $result->fetchAssociative(); 
+        return $result; 
+
+    }
+
+    public function createFortuneCookiesStillInProductionCheck(): Criteria {
+
+        $criteria = Criteria::create(); 
+        $criteria = $criteria->andWhere(Criteria::expr()->eq('discontinued', false)); 
+        
+        return $criteria; 
+    }
 
     public function rawQuery(){
         $conn = $this->getEntityManager()->getConnection(); 

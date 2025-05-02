@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria; 
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
@@ -56,6 +57,15 @@ class Category
         $this->iconKey = $iconKey;
 
         return $this;
+    } 
+
+    public function getFortuneCookiesStillInProduction(): Collection {
+
+        $criteria = Criteria::create(); 
+        $criteria = $criteria->andWhere(Criteria::expr()->eq('discontinued', false)); 
+
+        return $this->fortuneCookies->matching($criteria); 
+ 
     }
 
     /**
