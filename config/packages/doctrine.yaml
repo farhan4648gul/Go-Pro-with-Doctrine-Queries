@@ -5,13 +5,17 @@ doctrine:
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '15'
-    orm:
+    orm: 
+        dql: 
+            numeric_functions: 
+                rand: 'DoctrineExtensions\Query\Mysql\Rand' 
+                
         filters: 
             fortuneCookie_discontinued: 
                 class: App\Doctrine\DiscontinuedFilter 
                 enabled: true 
                 parameters: 
-                    discontinued: false 
+                    discontinued: false  
 
               
         auto_generate_proxy_classes: true
